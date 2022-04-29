@@ -32,6 +32,26 @@ import { ThemeSwitcher } from '../ThemeSwitcher'
 import logotype from '../../../logo192.png'
 import { languageLabels } from '../../../locales/i18n'
 
+const SidebarTooltip = (props: { children: React.ReactNode; isActive: boolean; label: string }) => {
+  const size = useContext(ResponsiveContext)
+  const isMediumSize = size === 'medium'
+  const tooltip = (
+    <Box
+      pad={{ vertical: 'small', right: 'medium' }}
+      margin="none"
+      background={props.isActive ? 'background-oasis-blue' : 'component-sidebar'}
+      round={{ size: 'medium', corner: 'right' }}
+    >
+      {props.label}
+    </Box>
+  )
+  return (
+    <Tip content={isMediumSize ? tooltip : undefined} dropProps={{ align: { left: 'right' } }} plain={true}>
+      {props.children}
+    </Tip>
+  )
+}
+
 interface SidebarButtonBaseProps {
   needsWalletOpen?: boolean
   icon: JSX.Element
@@ -58,23 +78,6 @@ export const SidebarButton = ({ needsWalletOpen, icon, label, route, onClick }: 
     return null
   }
 
-  const tooltip = (
-    <Box
-      pad={{ vertical: 'small', right: 'medium' }}
-      margin="none"
-      background={isActive ? 'background-oasis-blue' : 'component-sidebar'}
-      round={{ size: 'medium', corner: 'right' }}
-    >
-      {label}
-    </Box>
-  )
-
-  const SidebarTooltip = (props: { children: React.ReactNode }) => (
-    <Tip content={isMediumSize ? tooltip : undefined} dropProps={{ align: { left: 'right' } }} plain={true}>
-      {props.children}
-    </Tip>
-  )
-
   const component = (
     <Box
       pad={{ vertical: 'small', left: isMediumSize ? 'none' : 'medium' }}
@@ -91,7 +94,7 @@ export const SidebarButton = ({ needsWalletOpen, icon, label, route, onClick }: 
 
   if (route) {
     return (
-      <SidebarTooltip>
+      <SidebarTooltip label={label} isActive={isActive}>
         <NavLink aria-label={label} to={route}>
           {component}
         </NavLink>
@@ -99,7 +102,7 @@ export const SidebarButton = ({ needsWalletOpen, icon, label, route, onClick }: 
     )
   } else {
     return (
-      <SidebarTooltip>
+      <SidebarTooltip label={label} isActive={isActive}>
         <Button a11yTitle={label} fill="horizontal" onClick={onClick}>
           {component}
         </Button>
@@ -167,29 +170,32 @@ const SidebarFooter = (props: SidebarFooterProps) => {
         needsWalletOpen={true}
         onClick={() => logout()}
       />
-      <Box pad="small" align="center">
-        <Menu
-          hoverIndicator={false}
-          dropProps={{ align: { bottom: 'bottom', left: 'left' } }}
-          items={languageLabels.map(([key, label]) => ({ label: label, onClick: () => setLanguage(key) }))}
-        >
-          <Box direction="row" round="4px" border={{ size: '1px' }}>
-            <Box pad="small">
-              <Language />
+
+      <SidebarTooltip label="Language" isActive={false}>
+        <Box pad="small" align="center">
+          <Menu
+            hoverIndicator={false}
+            dropProps={{ align: { bottom: 'bottom', left: 'left' } }}
+            items={languageLabels.map(([key, label]) => ({ label: label, onClick: () => setLanguage(key) }))}
+          >
+            <Box direction="row" round="4px" border={{ size: '1px' }}>
+              <Box pad="small">
+                <Language />
+              </Box>
+              {size !== 'medium' && (
+                <>
+                  <Box pad="small" flex="grow">
+                    <Text>Language</Text>
+                  </Box>
+                  <Box pad="small">
+                    <FormDown />
+                  </Box>
+                </>
+              )}
             </Box>
-            {size !== 'medium' && (
-              <>
-                <Box pad="small" flex="grow">
-                  <Text>Language</Text>
-                </Box>
-                <Box pad="small">
-                  <FormDown />
-                </Box>
-              </>
-            )}
-          </Box>
-        </Menu>
-      </Box>
+          </Menu>
+        </Box>
+      </SidebarTooltip>
       <Box align="center" pad="small">
         <a href="https://github.com/oasisprotocol/oasis-wallet-web" target="_blank" rel="noopener">
           <Github />
