@@ -60,14 +60,22 @@ interface SidebarButtonBaseProps {
 
 type SidebarButtonProps = SidebarButtonBaseProps &
   (
-    | { route: string; onClick?: undefined }
+    | { route: string; newTab?: boolean; onClick?: undefined }
     | {
         route?: undefined
+        newTab?: undefined
         onClick: React.MouseEventHandler<HTMLButtonElement> & React.MouseEventHandler<HTMLAnchorElement>
       }
   )
 
-export const SidebarButton = ({ needsWalletOpen, icon, label, route, onClick }: SidebarButtonProps) => {
+export const SidebarButton = ({
+  needsWalletOpen,
+  icon,
+  label,
+  route,
+  newTab,
+  onClick,
+}: SidebarButtonProps) => {
   const isWalletOpen = useSelector(selectIsOpen)
   const size = useContext(ResponsiveContext)
   const location = useLocation()
@@ -95,7 +103,7 @@ export const SidebarButton = ({ needsWalletOpen, icon, label, route, onClick }: 
   if (route) {
     return (
       <SidebarTooltip label={label} isActive={isActive}>
-        <NavLink aria-label={label} to={route}>
+        <NavLink aria-label={label} to={route} {...(newTab ? { target: '_blank', rel: 'noopener' } : {})}>
           {component}
         </NavLink>
       </SidebarTooltip>
@@ -196,11 +204,12 @@ const SidebarFooter = (props: SidebarFooterProps) => {
           </Menu>
         </Box>
       </SidebarTooltip>
-      <Box align="center" pad="small">
-        <a href="https://github.com/oasisprotocol/oasis-wallet-web" target="_blank" rel="noopener">
-          <Github />
-        </a>
-      </Box>
+      <SidebarButton
+        icon={<Github />}
+        label="GitHub"
+        route="https://github.com/oasisprotocol/oasis-wallet-web"
+        newTab
+      ></SidebarButton>
     </Nav>
   )
 }
