@@ -32,17 +32,26 @@ import { ThemeSwitcher } from '../ThemeSwitcher'
 import logotype from '../../../logo192.png'
 import { languageLabels } from '../../../locales/i18n'
 
-interface SidebarButtonProps extends ButtonExtendedProps {
+interface SidebarButtonBaseProps {
   needsWalletOpen?: boolean
-  route?: string
+  icon: JSX.Element
   label: string
 }
 
-export const SidebarButton = ({ needsWalletOpen, icon, label, route, ...rest }: SidebarButtonProps) => {
+type SidebarButtonProps = SidebarButtonBaseProps &
+  (
+    | { route: string; onClick?: undefined }
+    | {
+        route?: undefined
+        onClick: React.MouseEventHandler<HTMLButtonElement> & React.MouseEventHandler<HTMLAnchorElement>
+      }
+  )
+
+export const SidebarButton = ({ needsWalletOpen, icon, label, route, onClick }: SidebarButtonProps) => {
   const isWalletOpen = useSelector(selectIsOpen)
   const size = useContext(ResponsiveContext)
   const location = useLocation()
-  const isActive = route && route === location.pathname
+  const isActive = route ? route === location.pathname : false
   const isMediumSize = size === 'medium'
 
   if (!isWalletOpen && needsWalletOpen) {
@@ -75,7 +84,7 @@ export const SidebarButton = ({ needsWalletOpen, icon, label, route, ...rest }: 
           plain
           icon={icon}
           label={!isMediumSize ? label : undefined}
-          {...rest}
+          onClick={onClick}
         />
       </Box>
     </Tip>
