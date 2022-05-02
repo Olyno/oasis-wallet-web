@@ -75,6 +75,7 @@ export const SidebarButton = ({
   route,
   newTab,
   onClick,
+  ...rest
 }: SidebarButtonProps) => {
   const isWalletOpen = useSelector(selectIsOpen)
   const size = useContext(ResponsiveContext)
@@ -103,7 +104,12 @@ export const SidebarButton = ({
   if (route) {
     return (
       <SidebarTooltip label={label} isActive={isActive}>
-        <NavLink aria-label={label} to={route} {...(newTab ? { target: '_blank', rel: 'noopener' } : {})}>
+        <NavLink
+          aria-label={label}
+          to={route}
+          {...(newTab ? { target: '_blank', rel: 'noopener' } : {})}
+          {...rest}
+        >
           {component}
         </NavLink>
       </SidebarTooltip>
@@ -111,7 +117,7 @@ export const SidebarButton = ({
   } else {
     return (
       <SidebarTooltip label={label} isActive={isActive}>
-        <Button a11yTitle={label} fill="horizontal" onClick={onClick}>
+        <Button a11yTitle={label} fill="horizontal" onClick={onClick} {...rest}>
           {component}
         </Button>
       </SidebarTooltip>
