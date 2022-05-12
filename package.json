@@ -146,7 +146,7 @@
     "jest-watch-typeahead": "1.0.0",
     "jest-when": "3.5.1",
     "lint-staged": "12.1.7",
-    "node-plop": "0.26.3",
+    "node-plop": "0.31.0",
     "nodemon": "2.0.15",
     "parcel": "2.3.2",
     "plop": "2.7.6",
